@@ -30,47 +30,6 @@ def timer(title):
     print(" ")
 
 
-def lag_features(dataframe, lags):
-    for lag in lags:
-        dataframe['TransactionAmt_lag' + str(lag)] = dataframe.groupby(["_Hours"])['TransactionAmt'].transform(
-            lambda x: x.shift(lag))
-    return dataframe
-
-
-def roll_mean_features(dataframe, windows):
-    for window in windows:
-        dataframe['TransactionAmt_roll_mean_' + str(window)] = dataframe.groupby(["_Hours"])[
-            'TransactionAmt'].transform(
-            lambda x: x.shift(1).rolling(window=window, min_periods=1, win_type="triang").mean())
-    return dataframe
-
-
-def ewm_features(dataframe, alphas, lags):
-    for alpha in alphas:
-        for lag in lags:
-            dataframe['TransactionAmt_ewm_alpha_' + str(alpha).replace(".", "") + "_lag_" + str(lag)] = \
-                dataframe.groupby(["_Hours"])['TransactionAmt'].transform(
-                    lambda x: x.shift(lag).ewm(alpha=alpha).mean())
-    return dataframe
-
-
-def rare_encoder(dataframe, rare_perc, cat_cols):
-    temp_df = dataframe.copy()
-    rare_columns = [col for col in cat_cols if (dataframe[col].value_counts() / len(temp_df) < .001).sum() > 1]
-    for col in rare_columns:
-        temp_df = dataframe[col].value_counts() / len(dataframe)
-        rare_labels = temp_df[temp_df < rare_perc].index
-        dataframe[col] = np.where(dataframe[col].isin(rare_labels), 'Rare', dataframe[col])
-    return dataframe
-
-
-def corr_droper(df, v_cols, th=0.80):
-    corr_matrix = df[v_cols].corr().abs()
-    upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(np.bool))
-    to_drop = [column for column in upper.columns if any(upper[column] > th)]
-    df.drop(to_drop, axis=1, inplace=True)
-
-
 
 def load_fraud_datasets():
     data = pd.read_pickle("fraud_df.pkl")
