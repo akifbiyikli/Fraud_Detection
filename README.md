@@ -1,9 +1,10 @@
 # Fraud_Detection
 IEEE-CIS Fraud Detection Kaggle Competition
 
+Roc-Auc Score: 0.952318
+
 Submission Score: 0.926347
 
-Roc-Auc Score: 0.952318
 
 ![1](https://user-images.githubusercontent.com/81163917/131989273-1b63815c-55c5-4bbd-a281-9bef99e7a968.jpeg)
 
